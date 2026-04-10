@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrandStay Hotels - Management Dashboard</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .login-box {
+            background: white;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-box h1 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .login-box img {
+            width: 120px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+        }
+
+        .header {
+            background: white;
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 0.75rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            object-fit: cover;
+        }
+
+        .logout-btn {
+            background: var(--danger-color);
+            padding: 0.5rem 1rem;
+            margin-left: 1rem;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: var(--primary-color);
+            color: white;
+            height: calc(100vh - 70px);
+            position: fixed;
+            padding: 1.5rem 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            transition: background 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .sidebar-menu i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-header h2 {
+            color: var(--primary-color);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .stat-card .description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h3 {
+            color: var(--primary-color);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: #d5f5e3;
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background: #fef9e7;
+            color: var(--warning-color);
+        }
+
+        .badge-danger {
+            background: #fadbd8;
+            color: var(--danger-color);
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 1.5rem;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            flex: 1;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+            }
+            .main-content {
+                margin-left: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-info {
+                margin-top: 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="login-page">
+        <div class="login-box fade-in">
+            <img src="https://via.placeholder.com/120x60?text=GrandStay" alt="GrandStay Logo">
+            <h1>Management Dashboard</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-block">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="container header-content">
+                <div class="logo">
+                    <img src="https://via.placeholder.com/40x40?text=GS" alt="Logo">
+                    <h1>GrandStay Hotels</h1>
+                </div>
+                <div class="user-info">
+                    <img src="https://via.placeholder.com/40x40?text=U" alt="User">
+                    <span>Admin User</span>
+                    <button class="btn logout-btn" id="logout-btn">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active"><i>📊</i> Dashboard</a></li>
+                <li><a href="#"><i>🏨</i> Bookings</a></li>
+                <li><a href="#"><i>💰</i> Revenue</a></li>
+                <li><a href="#"><i>👥</i> Guests</a></li>
+                <li><a href="#"><i>🏷️</i> Room Types</a></li>
+                <li><a href="#"><i>📍</i> Properties</a></li>
+                <li><a href="#"><i>⭐</i> Reviews</a></li>
+                <li><a href="#"><i>⚙️</i> Settings</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <div class="page-header">
+                    <h2>Dashboard Overview</h2>
+                    <div>
+                        <span id="current-date"></span>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>Total Bookings</h3>
+                        <div class="value" id="total-bookings">200</div>
+                        <div class="description">This month: +15%</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Revenue</h3>
+                        <div class="value" id="total-revenue">₹12.5M</div>
+                        <div class="description">This month: +8%</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Average Rating</h3>
+                        <div class="value" id="avg-rating">6.8</div>
+                        <div class="description">Out of 10</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Occupancy Rate</h3>
+                        <div class="value" id="occupancy-rate">82%</div>
+                        <div class="description">+5% from last month</div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="card">
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label for="property-filter">Property</label>
+                            <select id="property-filter">
+                                <option value="all">All Properties</option>
+                                <option value="GrandStay Goa">GrandStay Goa</option>
+                                <option value="GrandStay Jaipur">GrandStay Jaipur</option>
+                                <option value="GrandStay Delhi">GrandStay Delhi</option>
+                                <option value="GrandStay Bengaluru">GrandStay Bengaluru</option>
+                                <option value="GrandStay Mumbai">GrandStay Mumbai</option>
+                                <option value="GrandStay Chennai">GrandStay Chennai</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="room-type-filter">Room Type</label>
+                            <select id="room-type-filter">
+                                <option value="all">All Room Types</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Deluxe">Deluxe</option>
+                                <option value="Suite">Suite</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="date-range-filter">Date Range</label>
+                            <select id="date-range-filter">
+                                <option value="all">All Dates</option>
+                                <option value="this-month">This Month</option>
+                                <option value="last-month">Last Month</option>
+                                <option value="this-quarter">This Quarter</option>
+                                <option value="custom">Custom Range</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Bookings</h3>
+                        <button class="btn">View All</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="bookings-table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Guest Name</th>
+                                    <th>Property</th>
+                                    <th>Room Type</th>
+                                    <th>Check-In</th>
+                                    <th>Check-Out</th>
+                                    <th>Total Bill</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- Revenue by Property -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Revenue by Property</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenue-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Bookings by Channel -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Bookings by Channel</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="channel-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Sample hotel data from the CSV
+        const hotelData = [
+            // Sample data (first 10 records from the CSV)
+            {
+                "Booking ID": "BK0001",
+                "Guest Name": "Guest_001",
+                "Nationality": "Singaporean",
+                "Arrival Date": "2024-10-05",
+                "Departure Date": "2024-10-12",
+                "Length of Stay (nights)": "7",
+                "Room Type": "Standard",
+                "Room Rate per Night": "4000",
+                "Booking Channel": "Online",
+                "F&B Revenue": "7047.26",
+                "Spa Revenue": "19.24",
+                "Total Bill": "31528.37",
+                "Discount Applied": "3538.13",
+                "Payment Mode": "Cash",
+                "Property Name": "GrandStay Goa",
+                "Property City": "Goa",
+                "Guest Rating (1-10)": "3.2",
+                "Review Source": "Direct Feedback"
+            },
+            {
+                "Booking ID": "BK0002",
+                "Guest Name": "Guest_002",
+                "Nationality": "Singaporean",
+                "Arrival Date": "2024-04-30",
+                "Departure Date": "2024-05-09",
+                "Length of Stay (nights)": "9",
+                "Room Type": "Suite",
+                "Room Rate per Night": "15000",
+                "Booking Channel": "Agent",
+                "F&B Revenue": "514.33",
+                "Spa Revenue": "1776.39",
+                "Total Bill": "118684.68",
+                "Discount Applied": "18606.04",
+                "Payment Mode": "Debit Card",
+                "Property Name": "GrandStay Jaipur",
+                "Property City": "Jaipur",
+                "Guest Rating (1-10)": "6.9",
+                "Review Source": "Direct Feedback"
+            },
+            {
+                "Booking ID": "BK0003",
+                "Guest Name": "Guest_003",
+                "Nationality": "Singaporean",
+                "Arrival Date": "2024-11-09",
+                "Departure Date": "2024-11-10",
+                "Length of Stay (nights)": "1",
+                "Room Type": "Standard",
+                "Room Rate per Night": "4000",
+                "Booking Channel": "Direct",
+                "F&B Revenue": "3883.26",
+                "Spa Revenue": "2669.91",
+                "Total Bill": "10207.41",
+                "Discount Applied": "345.76",
+                "Payment Mode": "Debit Card",
+                "Property Name": "GrandStay Jaipur",
+                "Property City": "Jaipur",
+                "Guest Rating (1-10)": "8.7",
+                "Review Source": "Google"
+            },
+            {
+                "Booking ID": "BK0004",
+                "Guest Name": "Guest_004",
+                "Nationality": "British",
+                "Arrival Date": "2024-10-11",
+                "Departure Date": "2024-10-15",
+                "Length of Stay (nights)": "4",
+                "Room Type": "Suite",
+                "Room Rate per Night": "15000",
+                "Booking Channel": "Direct",
+                "F&B Revenue": "5070.6",
+                "Spa Revenue": "1926.82",
+                "Total Bill": "57522.17",
+                "Discount Applied": "9475.25",
+                "Payment Mode": "UPI",
+                "Property Name": "GrandStay Delhi",
+                "Property City": "Delhi",
+                "Guest Rating (1-10)": "9.1",
+                "Review Source": "TripAdvisor"
+            },
+            {
+                "Booking ID": "BK0005",
+                "Guest Name": "Guest_005",
+                "Nationality": "British",
+                "Arrival Date": "2024-09-15",
+                "Departure Date": "2024-09-21",
+                "Length of Stay (nights)": "6",
+                "Room Type": "Suite",
+                "Room Rate per Night": "15000",
+                "Booking Channel": "Direct",
+                "F&B Revenue": "1355.34",
+                "Spa Revenue": "3155.53",
+                "Total Bill": "84748.91",
+                "Discount Applied": "9761.96",
+                "Payment Mode": "UPI",
+                "Property Name": "GrandStay Jaipur",
+                "Property City": "Jaipur",
+                "Guest Rating (1-10)": "1.9",
+                "Review Source": "MakeMyTrip"
+            },
+            {
+                "Booking ID": "BK0006",
+                "Guest Name": "Guest_006",
+                "Nationality": "Singaporean",
+                "Arrival Date": "2024-10-09",
+                "Departure Date": "2024-10-14",
+                "Length of Stay (nights)": "5",
+                "Room Type": "Standard",
+                "Room Rate per Night": "4000",
+                "Booking Channel": "Online",
+                "F&B Revenue": "506.15",
+                "Spa Revenue": "371.93",
+                "Total Bill": "20257.87",
+                "Discount Applied": "620.21",
+                "Payment Mode": "Debit Card",
+                "Property Name": "GrandStay Bengaluru",
+                "Property City": "Bengaluru",
+                "Guest Rating (1-10)": "9.1",
+                "Review Source": "Direct Feedback"
+            },
+            {
+                "Booking ID": "BK0007",
+                "Guest Name": "Guest_007",
+                "Nationality": "British",
+                "Arrival Date": "2024-03-19",
+                "Departure Date": "2024-03-21",
+                "Length of Stay (nights)": "2",
+                "Room Type": "Suite",
+                "Room Rate per Night": "15000",
+                "Booking Channel": "Direct",
+                "F&B Revenue": "4554.23",
+                "Spa Revenue": "2540.51",
+                "Total Bill": "31269.84",
+                "Discount Applied": "5824.9",
+                "Payment Mode": "Credit Card",
+                "Property Name": "GrandStay Goa",
+                "Property City": "Goa",
+                "Guest Rating (1-10)": "5.8",
+                "Review Source": "Booking.com"
+            },
+            {
+                "Booking ID": "BK0008",
+                "Guest Name": "Guest_008",
+                "Nationality": "Indian",
+                "Arrival Date": "2024-12-28",
+                "Departure Date": "2024-12-29",
+                "Length of Stay (nights)": "1",
+                "Room Type": "Deluxe",
+                "Room Rate per Night": "7500",
+                "Booking Channel": "Direct",
+                "F&B Revenue": "7645.01",
+                "Spa Revenue": "2411.39",
+                "Total Bill": "16977.94",
+                "Discount Applied": "578.46",
+                "Payment Mode": "Cash",
+                "Property Name": "GrandStay Chennai",
+                "Property City": "Chennai",
+                "Guest Rating (1-10)": "8.4",
+                "Review Source": "Google"
+            },
+            {
+                "Booking ID": "BK0009",
+                "Guest Name": "Guest_009",
+                "Nationality": "French",
+                "Arrival Date": "2024-01-04",
+                "Departure Date": "2024-01-13",
+                "Length of Stay (nights)": "9",
+                "Room Type": "Suite",
+                "Room Rate per Night": "15000",
+                "Booking Channel": "Online",
+                "F&B Revenue": "1253.38",
+                "Spa Revenue": "3270.95",
+                "Total Bill": "132331.5",
+                "Discount Applied": "7192.83",
+                "Payment Mode": "UPI",
+                "Property Name": "GrandStay Mumbai",
+                "Property City": "Mumbai",
+                "Guest Rating (1-10)": "6.5",
+                "Review Source": "MakeMyTrip"
+            },
+            {
+                "Booking ID": "BK0010",
+                "Guest Name": "Guest_010",
+                "Nationality": "Singaporean",
+                "Arrival Date": "2024-02-29",
+                "Departure Date": "2024-03-08",
+                "Length of Stay (nights)": "8",
+                "Room Type": "Suite",
+                "Room Rate per Night": "15000",
+                "Booking Channel": "Agent",
+                "F&B Revenue": "5710.95",
+                "Spa Revenue": "1761.72",
+                "Total Bill": "113230.57",
+                "Discount Applied": "14242.1",
+                "Payment Mode": "Debit Card",
+                "Property Name": "GrandStay Bengaluru",
+                "Property City": "Bengaluru",
+                "Guest Rating (1-10)": "5.9",
+                "Review Source": "Booking.com"
+            }
+            // More data would be added here in a real implementation
+        ];
+
+        // DOM Elements
+        const loginPage = document.getElementById('login-page');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('login-form');
+        const logoutBtn = document.getElementById('logout-btn');
+        const currentDateElement = document.getElementById('current-date');
+        const bookingsTable = document.getElementById('bookings-table').getElementsByTagName('tbody')[0];
+
+        // Login Functionality
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation (in a real app, this would be more secure)
+            if (username && password) {
+                // Hide login page, show dashboard
+                loginPage.style.display = 'none';
+                dashboard.style.display = 'block';
+                
+                // Initialize dashboard
+                initializeDashboard();
+            } else {
+                alert('Please enter both username and password');
+            }
+        });
+
+        // Logout Functionality
+        logoutBtn.addEventListener('click', function() {
+            // Show login page, hide dashboard
+            dashboard.style.display = 'none';
+            loginPage.style.display = 'flex';
+            
+            // Reset form
+            loginForm.reset();
+        });
+
+        // Initialize Dashboard
+        function initializeDashboard() {
+            // Set current date
+            const now = new Date();
+            currentDateElement.textContent = now.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            // Populate bookings table
+            populateBookingsTable();
+
+            // Initialize charts
+            initializeCharts();
+        }
+
+        // Populate Bookings Table
+        function populateBookingsTable() {
+            // Clear existing rows
+            bookingsTable.innerHTML = '';
+
+            // Add rows for each booking
+            hotelData.forEach(booking => {
+                const row = bookingsTable.insertRow();
+                
+                // Determine status badge based on arrival date
+                const arrivalDate = new Date(booking['Arrival Date']);
+                const today = new Date();
+                let status, badgeClass;
+                
+                if (arrivalDate > today) {
+                    status = 'Upcoming';
+                    badgeClass = 'badge badge-warning';
+                } else {
+                    status = 'Completed';
+                    badgeClass = 'badge badge-success';
+                }
+
+                // Format total bill as currency
+                const totalBill = parseFloat(booking['Total Bill']).toLocaleString('en-IN', {
+                    style: 'currency',
+                    currency: 'INR',
+                    maximumFractionDigits: 0
+                });
+
+                // Add cells to the row
+                row.innerHTML = `
+                    <td>${booking['Booking ID']}</td>
+                    <td>${booking['Guest Name']}</td>
+                    <td>${booking['Property Name']}</td>
+                    <td>${booking['Room Type']}</td>
+                    <td>${formatDate(booking['Arrival Date'])}</td>
+                    <td>${formatDate(booking['Departure Date'])}</td>
+                    <td>${totalBill}</td>
+                    <td><span class="${badgeClass}">${status}</span></td>
+                `;
+            });
+        }
+
+        // Format date as DD/MM/YYYY
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
+        }
+
+        // Initialize Charts
+        function initializeCharts() {
+            // Revenue by Property Chart
+            const revenueCtx = document.getElementById('revenue-chart').getContext('2d');
+            
+            // Group revenue by property
+            const revenueByProperty = {};
+            hotelData.forEach(booking => {
+                const property = booking['Property Name'];
+                const revenue = parseFloat(booking['Total Bill']);
+                
+                if (!revenueByProperty[property]) {
+                    revenueByProperty[property] = 0;
+                }
+                revenueByProperty[property] += revenue;
+            });
+
+            const revenueChart = new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(revenueByProperty),
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: Object.values(revenueByProperty),
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(155, 89, 182, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(241, 196, 15, 0.7)',
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(26, 188, 156, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(155, 89, 182, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(241, 196, 15, 1)',
+                            'rgba(231, 76, 60, 1)',
+                            'rgba(26, 188, 156, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Revenue: ₹' + context.raw.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Bookings by Channel Chart
+            const channelCtx = document.getElementById('channel-chart').getContext('2d');
+            
+            // Group bookings by channel
+            const bookingsByChannel = {};
+            hotelData.forEach(booking => {
+                const channel = booking['Booking Channel'];
+                
+                if (!bookingsByChannel[channel]) {
+                    bookingsByChannel[channel] = 0;
+                }
+                bookingsByChannel[channel]++;
+            });
+
+            const channelChart = new Chart(channelCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(bookingsByChannel),
+                    datasets: [{
+                        data: Object.values(bookingsByChannel),
+                        backgroundColor: [
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(155, 89, 182, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(241, 196, 15, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(155, 89, 182, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(241, 196, 15, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Filter functionality (would be implemented in a real app)
+        document.getElementById('property-filter').addEventListener('change', function() {
+            // In a real app, this would filter the data and update the table and charts
+            console.log('Filter by property:', this.value);
+        });
+
+        document.getElementById('room-type-filter').addEventListener('change', function() {
+            // In a real app, this would filter the data and update the table and charts
+            console.log('Filter by room type:', this.value);
+        });
+
+        document.getElementById('date-range-filter').addEventListener('change', function() {
+            // In a real app, this would filter the data and update the table and charts
+            console.log('Filter by date range:', this.value);
+        });
+    </script>
+</body>
+</html>
